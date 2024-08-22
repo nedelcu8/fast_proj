@@ -9,6 +9,7 @@ mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr , wxID_ANY , title
 {
 	CreateControls();
 	BindEventHandlers();
+	addSavedTasks();
 
 }
 
@@ -33,6 +34,7 @@ void mainFrame::CreateControls()
 		wxSize(600, 400));
 	clearButton = new wxButton(panel, wxID_ANY, "Clear", wxPoint(100, 525),
 		wxSize(100, 35));
+	this->Bind(wxEVT_CLOSE_WINDOW, &mainFrame::onWidnowsClose, this);
 
 
 
@@ -44,6 +46,16 @@ void mainFrame::BindEventHandlers()
 	inputField->Bind(wxEVT_TEXT_ENTER, &mainFrame::onInputEnter, this);
 	checkListBox->Bind(wxEVT_KEY_DOWN, &mainFrame::onListKeyDown, this);
 	clearButton->Bind(wxEVT_BUTTON, &mainFrame::onClearButtonClicked, this);
+}
+
+void mainFrame::addSavedTasks()
+{
+	std::vector<task> tasks = loadTasksFromFile("tasks.txt");
+	for (const task& task : tasks) {
+		int index = checkListBox->GetCount();
+		checkListBox->Insert(task.description, index);
+		checkListBox->Check(index, task.done);
+	}
 }
 
 void mainFrame::onAddButtonClicked(wxCommandEvent& evt)
@@ -86,6 +98,20 @@ void mainFrame::onClearButtonClicked(wxCommandEvent& evt)
 	{
 		checkListBox->Clear();
 	}
+}
+
+void mainFrame::onWidnowsClose(wxCloseEvent& evt)
+{
+	std::vector<task> tasks;
+	for (int i = 0; i < checkListBox->GetCount(); i++) {
+		task task;
+		task.description = checkListBox->GetString(i);
+		task.done = checkListBox->IsChecked(i);
+		tasks.push_back(task);
+	}
+	safeTaskToFile(tasks, "tasks.txt");
+	evt.Skip();
+
 }
 
 
