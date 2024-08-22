@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <algorithm>
-
+ 
 void safeTaskToFile(const std::vector<task>& tasks, const std::string& fileName)
 {
 	std::ofstream ostream(fileName);
