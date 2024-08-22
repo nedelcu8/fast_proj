@@ -5,13 +5,16 @@
 #include "task.h"
 
 
-mainFrame::mainFrame(const wxString& title) : wxFrame(nullptr , wxID_ANY , title)
+mainFrame::mainFrame(const wxString& title) 
+	: wxFrame(nullptr , wxID_ANY , title)
 {
 	CreateControls();
 	BindEventHandlers();
 	addSavedTasks();
 
 }
+
+
 
 void mainFrame::CreateControls()
 {
@@ -34,7 +37,7 @@ void mainFrame::CreateControls()
 		wxSize(600, 400));
 	clearButton = new wxButton(panel, wxID_ANY, "Clear", wxPoint(100, 525),
 		wxSize(100, 35));
-	this->Bind(wxEVT_CLOSE_WINDOW, &mainFrame::onWidnowsClose, this);
+
 
 
 
@@ -46,6 +49,8 @@ void mainFrame::BindEventHandlers()
 	inputField->Bind(wxEVT_TEXT_ENTER, &mainFrame::onInputEnter, this);
 	checkListBox->Bind(wxEVT_KEY_DOWN, &mainFrame::onListKeyDown, this);
 	clearButton->Bind(wxEVT_BUTTON, &mainFrame::onClearButtonClicked, this);
+	this->Bind(wxEVT_SIZE, &mainFrame::onResize, this);
+
 }
 
 void mainFrame::addSavedTasks()
