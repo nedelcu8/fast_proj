@@ -9,6 +9,7 @@ mainFrame::mainFrame(const wxString& title)
 	: wxFrame(nullptr , wxID_ANY , title)
 {
 	CreateControls();
+	setUpSizers();
 	BindEventHandlers();
 	addSavedTasks();
 
@@ -24,19 +25,14 @@ void mainFrame::CreateControls()
 	panel = new wxPanel(this);
 	panel->SetFont(mainFont);
 
-	headlineText = new wxStaticText(panel, wxID_ANY, "TO-DO List", 
-		wxPoint(0, 22), wxSize(800, -1), wxALIGN_CENTER_HORIZONTAL);
+	headlineText = new wxStaticText(panel, wxID_ANY, "TO-DO List");
 	headlineText->SetFont(headlineFont);
 	
 
-	inputField = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(100, 80),
-		wxSize(495, 35) , wxTE_PROCESS_ENTER);
-	addButton = new wxButton(panel, wxID_ANY, "Add", wxPoint(600, 80),
-		wxSize(100, 35));
-	checkListBox = new wxCheckListBox(panel, wxID_ANY,wxPoint(100, 120),
-		wxSize(600, 400));
-	clearButton = new wxButton(panel, wxID_ANY, "Clear", wxPoint(100, 525),
-		wxSize(100, 35));
+	inputField = new wxTextCtrl(panel, wxID_ANY, "",wxDefaultPosition , wxDefaultSize , wxTE_PROCESS_ENTER);
+	addButton = new wxButton(panel, wxID_ANY, "Add");
+	checkListBox = new wxCheckListBox(panel, wxID_ANY);
+	clearButton = new wxButton(panel, wxID_ANY, "Clear");
 
 
 
@@ -49,7 +45,7 @@ void mainFrame::BindEventHandlers()
 	inputField->Bind(wxEVT_TEXT_ENTER, &mainFrame::onInputEnter, this);
 	checkListBox->Bind(wxEVT_KEY_DOWN, &mainFrame::onListKeyDown, this);
 	clearButton->Bind(wxEVT_BUTTON, &mainFrame::onClearButtonClicked, this);
-	this->Bind(wxEVT_SIZE, &mainFrame::onResize, this);
+	
 
 }
 
@@ -61,6 +57,38 @@ void mainFrame::addSavedTasks()
 		checkListBox->Insert(task.description, index);
 		checkListBox->Check(index, task.done);
 	}
+}
+
+void mainFrame::setUpSizers()
+{
+
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+
+	mainSizer->Add(headlineText, wxSizerFlags().CenterHorizontal());
+	mainSizer->AddSpacer(25);
+
+	
+	wxBoxSizer* inputSizer = new wxBoxSizer(wxGA_HORIZONTAL);
+
+	inputSizer->Add(inputField, wxSizerFlags().Proportion(1));
+	inputSizer->AddSpacer(5);
+	inputSizer->Add(addButton);
+
+
+	mainSizer->Add(inputSizer, wxSizerFlags().Expand());
+	mainSizer->AddSpacer(5);
+
+	mainSizer->Add(checkListBox, wxSizerFlags().Expand().Proportion(1));
+	mainSizer->AddSpacer(5);
+
+	mainSizer->Add(clearButton);
+
+	wxGridSizer* outerSizer = new wxGridSizer(1);
+	outerSizer->Add(mainSizer, wxSizerFlags().Border(wxALL, 25).Expand());
+
+	panel->SetSizer(outerSizer);
+	outerSizer->SetSizeHints(this);
+
 }
 
 void mainFrame::onAddButtonClicked(wxCommandEvent& evt)

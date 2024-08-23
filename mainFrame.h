@@ -10,7 +10,7 @@ private:
 	void CreateControls();
 	void BindEventHandlers();
 	void addSavedTasks();
-
+	void setUpSizers();
 	void onAddButtonClicked(wxCommandEvent& evt);
 	void onInputEnter(wxCommandEvent& env);
 	void onListKeyDown(wxKeyEvent& evt);
