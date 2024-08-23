@@ -33,6 +33,7 @@ void mainFrame::CreateControls()
 	addButton = new wxButton(panel, wxID_ANY, "Add");
 	checkListBox = new wxCheckListBox(panel, wxID_ANY);
 	clearButton = new wxButton(panel, wxID_ANY, "Clear");
+	this->Bind(wxEVT_CLOSE_WINDOW, &mainFrame::onWidnowsClose, this);
 
 
 
